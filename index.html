@@ -312,25 +312,25 @@
 
     /* Business card */
     .biz-card-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0); z-index: 2000; pointer-events: none; transition: background 0.5s; display: flex; align-items: center; justify-content: center; }
-    .biz-card-backdrop.open { background: rgba(0,0,0,0.8); pointer-events: all; backdrop-filter: blur(12px); }
-    .biz-card { position: relative; width: 560px; max-width: 90vw; background: #111; border: 1px solid rgba(255,255,255,0.08); padding: 56px 48px 48px; transform: translateY(30px) scale(0.96); opacity: 0; transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.6s cubic-bezier(0.16,1,0.3,1); overflow: hidden; }
+    .biz-card-backdrop.open { background: rgba(0,0,0,0.55); pointer-events: all; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .biz-card { position: relative; width: 560px; max-width: 92vw; background: rgba(30,30,30,0.95); border: 1px solid rgba(255,255,255,0.14); padding: 56px 48px 48px; transform: translateY(30px) scale(0.96); opacity: 0; transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.6s cubic-bezier(0.16,1,0.3,1); overflow: hidden; border-radius: 4px; box-shadow: 0 32px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06); }
     @media (max-width: 768px) { .biz-card { padding: 48px 28px 36px; } }
     .biz-card-backdrop.open .biz-card { transform: translateY(0) scale(1); opacity: 1; }
-    .biz-card::before { content: 'HM.'; position: absolute; bottom: -20px; right: 20px; font-family: 'Syncopate', sans-serif; font-size: 100px; font-weight: 700; color: rgba(255,255,255,0.025); line-height: 1; pointer-events: none; user-select: none; }
-    .biz-card-header { margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 32px; }
-    .biz-card-label { font-size: 10px; letter-spacing: 0.4em; color: #444; font-family: 'Syncopate', sans-serif; margin-bottom: 16px; text-transform: uppercase; }
-    .biz-card-name { font-family: 'Syncopate', sans-serif; font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 700; letter-spacing: 0.05em; line-height: 1.1; margin-bottom: 8px; background: linear-gradient(to right, #fff, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .biz-card-title { font-size: 13px; color: #555; font-weight: 300; letter-spacing: 0.15em; text-transform: uppercase; }
+    .biz-card::before { content: 'HM.'; position: absolute; bottom: -20px; right: 20px; font-family: 'Syncopate', sans-serif; font-size: 100px; font-weight: 700; color: rgba(255,255,255,0.04); line-height: 1; pointer-events: none; user-select: none; }
+    .biz-card-header { margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 32px; }
+    .biz-card-label { font-size: 10px; letter-spacing: 0.4em; color: #666; font-family: 'Syncopate', sans-serif; margin-bottom: 16px; text-transform: uppercase; }
+    .biz-card-name { font-family: 'Syncopate', sans-serif; font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 700; letter-spacing: 0.05em; line-height: 1.1; margin-bottom: 8px; background: linear-gradient(to right, #fff, #999); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .biz-card-title { font-size: 13px; color: #888; font-weight: 300; letter-spacing: 0.15em; text-transform: uppercase; }
     .biz-card-contacts { display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; }
     .biz-card-contact-row { display: flex; align-items: center; gap: 20px; }
-    .biz-card-contact-icon { width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
-    .biz-card-contact-info label { display: block; font-size: 9px; letter-spacing: 0.3em; color: #444; font-family: 'Syncopate', sans-serif; text-transform: uppercase; margin-bottom: 4px; }
-    .biz-card-contact-info span, .biz-card-contact-info a { font-size: 13px; color: #aaa; font-weight: 300; text-decoration: none; transition: color 0.3s; border: none; padding: 0; display: inline; word-break: break-all; }
+    .biz-card-contact-icon { width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; background: rgba(255,255,255,0.04); }
+    .biz-card-contact-info label { display: block; font-size: 9px; letter-spacing: 0.3em; color: #666; font-family: 'Syncopate', sans-serif; text-transform: uppercase; margin-bottom: 4px; }
+    .biz-card-contact-info span, .biz-card-contact-info a { font-size: 13px; color: #ccc; font-weight: 300; text-decoration: none; transition: color 0.3s; border: none; padding: 0; display: inline; word-break: break-all; }
     .biz-card-contact-info a:hover { color: #fff; }
-    .biz-card-close { position: absolute; top: 24px; right: 24px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; background: transparent; color: #555; font-size: 14px; transition: border-color 0.3s, color 0.3s, transform 0.3s; cursor: pointer; }
-    .biz-card-close:hover { border-color: rgba(255,255,255,0.4); color: #fff; transform: rotate(90deg); }
-    .biz-card-divider { height: 1px; background: rgba(255,255,255,0.06); margin-bottom: 24px; }
-    .biz-card-footer { font-size: 10px; color: #333; letter-spacing: 0.2em; text-transform: uppercase; font-family: 'Syncopate', sans-serif; }
+    .biz-card-close { position: absolute; top: 24px; right: 24px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.15); border-radius: 50%; background: rgba(255,255,255,0.05); color: #aaa; font-size: 14px; transition: border-color 0.3s, color 0.3s, transform 0.3s, background 0.3s; cursor: pointer; }
+    .biz-card-close:hover { border-color: rgba(255,255,255,0.5); color: #fff; transform: rotate(90deg); background: rgba(255,255,255,0.1); }
+    .biz-card-divider { height: 1px; background: rgba(255,255,255,0.1); margin-bottom: 24px; }
+    .biz-card-footer { font-size: 10px; color: #666; letter-spacing: 0.2em; text-transform: uppercase; font-family: 'Syncopate', sans-serif; }
   </style>
 </head>
 <body>
