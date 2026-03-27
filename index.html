@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
   <title>Hannah Medellin - Student Developer</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600&display=swap');
@@ -16,6 +16,17 @@
 
     * {
       box-sizing: border-box;
+    }
+
+    /* Mobile Accessibility: touch-action */
+    html, body {
+      touch-action: pan-y;
+    }
+    #track {
+      touch-action: pan-x pinch-zoom;
+    }
+    .project-card, .interactive, a, button {
+      touch-action: manipulation;
     }
 
     body {
@@ -72,7 +83,7 @@
       100% { transform: translateX(-50%); }
     }
 
-    /* CHANGE 2: Project Card smooth entrance transition */
+    /* Project Card smooth entrance transition */
     .project-card {
       transform-style: preserve-3d;
       will-change: transform;
@@ -84,7 +95,6 @@
       opacity: 1;
       transform: translateY(-20px);
     }
-    /* Override for 3D hover while visible */
     .project-card.card-visible:hover {
       transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
@@ -575,6 +585,8 @@
       max-height: 85vh;
       overflow-y: auto;
       scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
     .project-modal::-webkit-scrollbar { display: none; }
     .project-modal.open {
@@ -843,7 +855,7 @@
       opacity: 0.15;
     }
 
-    /* CHANGE 3: Business Card Modal */
+    /* Business Card Modal */
     .biz-card-backdrop {
       position: fixed;
       inset: 0;
@@ -872,6 +884,8 @@
       opacity: 0;
       transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       overflow: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
     .biz-card-backdrop.open .biz-card {
       transform: translateY(0) scale(1);
@@ -1076,6 +1090,69 @@
         cursor: pointer;
       }
     }
+
+    /* Mobile: Disable hover-only effects */
+    @media (hover: none) and (pointer: coarse) {
+      .project-card {
+        transform: translateY(-20px) !important;
+        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      .project-card:hover {
+        transform: translateY(-20px) !important;
+      }
+      .hero-image:hover {
+        filter: grayscale(1);
+      }
+      .skill-tag:hover,
+      .timeline-item:hover .timeline-node,
+      .project-modal-close:hover,
+      .biz-card-close:hover {
+        transform: none !important;
+      }
+    }
+
+    /* Mobile: WCAG touch targets */
+    @media (max-width: 768px) {
+      .nav-links {
+        gap: 24px;
+      }
+      .skill-tag,
+      .project-tag,
+      .project-modal-tag,
+      .project-view-more,
+      .project-modal-close,
+      .biz-card-close {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .project-view-more {
+        padding: 12px 0;
+      }
+    }
+
+    /* Prevent accidental text selection during drag */
+    #track,
+    .project-card,
+    .timeline-item {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    .hero-text p,
+    #about > p,
+    .timeline-desc,
+    .project-card p,
+    .project-modal-desc,
+    .project-modal-highlight-item span {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
   </style>
 </head>
 <body>
@@ -1262,7 +1339,7 @@
               />
               <div class="project-card-overlay"></div>
             </div>
-            <div class="project-card-content">>
+            <div class="project-card-content">
               <h3>AteneoGo</h3>
               <p>Figma-prototyped mobile app connecting students for peer-to-peer campus task earning.</p>
               <button class="project-view-more interactive">
@@ -1404,7 +1481,7 @@
     <div class="project-modal-number" id="modal-number"></div>
   </div>
 
-  <!-- CHANGE 3: Business Card Modal -->
+  <!-- Business Card Modal -->
   <div class="biz-card-backdrop" id="biz-card-backdrop">
     <div class="biz-card" id="biz-card">
       <button class="biz-card-close interactive" id="biz-card-close" aria-label="Close">✕</button>
@@ -1647,7 +1724,10 @@
       projectModal.classList.add('open');
       isModalOpen = true;
 
+      // iOS scroll lock fix
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollCurrentX}px`;
     }
 
     function closeModal() {
@@ -1655,19 +1735,21 @@
       projectModal.classList.remove('open');
       isModalOpen = false;
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      // Restore scroll position
+      track.style.transform = `translate3d(${-scrollCurrentX}px, 0, 0)`;
     }
 
-    // CHANGE 1: Open on card click (entire card), not just "View More" button
+    // Open on card click (entire card)
     document.querySelectorAll('.project-card').forEach(card => {
       card.addEventListener('click', (e) => {
-        // Don't double-fire if the "View More" button itself was clicked
-        // (the button's own listener also calls openModal, but stopPropagation prevents it reaching here)
         const projectIndex = parseInt(card.dataset.project);
         openModal(projectIndex);
       });
     });
 
-    // Open on "View More" button click — stop propagation so card listener doesn't double-fire
+    // Open on "View More" button click — stop propagation
     document.querySelectorAll('.project-view-more').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1694,7 +1776,7 @@
       e.stopPropagation();
     });
 
-    // ==================== CHANGE 3: BUSINESS CARD ====================
+    // ==================== BUSINESS CARD ====================
     const bizCardBackdrop = document.getElementById('biz-card-backdrop');
     const bizCardClose    = document.getElementById('biz-card-close');
     const bizCardTrigger  = document.getElementById('biz-card-trigger');
@@ -1748,7 +1830,7 @@
       });
     });
 
-    // ==================== CHANGE 4: NAVIGATION — scroll to correct offsetLeft ====================
+    // ==================== NAVIGATION ====================
     const sectionRefs = {
       hero:      document.getElementById('hero'),
       about:     document.getElementById('about'),
@@ -1762,8 +1844,6 @@
         const targetId = el.dataset.target;
         const targetSection = sectionRefs[targetId];
         if (targetSection && track && container) {
-          // offsetLeft is relative to track; we subtract half the container width
-          // and add half the section width to center the section in view
           const sectionCenter = targetSection.offsetLeft + targetSection.offsetWidth / 2;
           const viewCenter = container.clientWidth / 2;
           let targetX = sectionCenter - viewCenter;
@@ -1896,7 +1976,7 @@
     animateCanvas();
     window.addEventListener('resize', handleCanvasResize);
 
-    // ==================== SCROLL REVEAL (INTERSECTION OBSERVER) ====================
+    // ==================== SCROLL REVEAL ====================
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1909,11 +1989,10 @@
       revealObserver.observe(el);
     });
 
-    // CHANGE 2: Project card smooth entrance via IntersectionObserver
+    // Project card smooth entrance
     const cardObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry, i) => {
         if (entry.isIntersecting) {
-          // Stagger each card slightly based on its position
           const card = entry.target;
           const delay = parseInt(card.closest('[style*="transition-delay"]')?.style?.transitionDelay) || 0;
           setTimeout(() => {
@@ -1946,35 +2025,68 @@
     window.addEventListener('resize', updateMaxScrollX);
 
     function handleWheel(e) {
-      if (isModalOpen) return;
+      if (isModalOpen || isBizCardOpen) return;
       e.preventDefault();
       scrollTargetX += (e.deltaY + e.deltaX) * wheelMultiplier;
       scrollTargetX = Math.max(0, Math.min(scrollTargetX, maxScrollX));
     }
 
+    // Enhanced touch handlers with momentum
     let touchStartX = 0;
     let touchStartY = 0;
+    let touchLastX = 0;
+    let touchVelocity = 0;
+    let touchTimestamp = 0;
 
     function handleTouchStart(e) {
+      if (isModalOpen || isBizCardOpen) return;
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
+      touchLastX = touchStartX;
+      touchVelocity = 0;
+      touchTimestamp = Date.now();
+      cancelAnimationFrame(rafId);
     }
 
     function handleTouchMove(e) {
-      if (isModalOpen) return;
+      if (isModalOpen || isBizCardOpen) return;
       const touchCurrentX = e.touches[0].clientX;
       const touchCurrentY = e.touches[0].clientY;
-      const dx = touchStartX - touchCurrentX;
+      const dx = touchLastX - touchCurrentX;
       const dy = touchStartY - touchCurrentY;
-      scrollTargetX += (Math.abs(dx) > Math.abs(dy) ? dx : dy) * 2;
-      scrollTargetX = Math.max(0, Math.min(scrollTargetX, maxScrollX));
-      touchStartX = touchCurrentX;
-      touchStartY = touchCurrentY;
+      
+      if (Math.abs(dx) > Math.abs(dy)) {
+        e.preventDefault();
+        const now = Date.now();
+        const dt = now - touchTimestamp;
+        touchVelocity = dx / (dt || 1);
+        touchTimestamp = now;
+        
+        scrollTargetX += dx * 1.5;
+        scrollTargetX = Math.max(0, Math.min(scrollTargetX, maxScrollX));
+        touchLastX = touchCurrentX;
+      }
+    }
+
+    function handleTouchEnd() {
+      let momentum = touchVelocity * 15;
+      const animateMomentum = () => {
+        momentum *= 0.95;
+        if (Math.abs(momentum) > 0.1) {
+          scrollTargetX += momentum;
+          scrollTargetX = Math.max(0, Math.min(scrollTargetX, maxScrollX));
+          requestAnimationFrame(animateMomentum);
+        }
+      };
+      animateMomentum();
+      rafId = requestAnimationFrame(renderScroll);
     }
 
     window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
 
     function renderScroll() {
       scrollCurrentX += (scrollTargetX - scrollCurrentX) * scrollEase;
@@ -1993,6 +2105,8 @@
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchEnd);
       cancelAnimationFrame(rafId);
     });
   </script>
